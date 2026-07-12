@@ -3,11 +3,11 @@ name: CI Workflow
 on:
   push:
     branches:
-      - main
+      - master
 
   pull_request:
     branches:
-      - main
+      - master
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -18,18 +18,22 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
+          cache: 'npm'
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Run ESLint
         run: npm run lint
+
+      - name: Run tests
+        run: npm test
 
       - name: Build the project
         run: npm run build
@@ -39,10 +43,10 @@ jobs:
         run: |
           if [[ -z $(git status --porcelain) ]]; then
             echo "No changes to commit."
-            echo "::set-output name=changes::false"
+            echo "changes=false" >> "$GITHUB_OUTPUT"
           else
             echo "Changes detected."
-            echo "::set-output name=changes::true"
+            echo "changes=true" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Commit built files
@@ -51,8 +55,8 @@ jobs:
           git config --global user.email 'actions@github.com'
           git add dist/
           git commit -m "Build and minify files [skip ci]"
-        if: steps.check_changes.outputs.changes == 'true'
+        if: github.event_name == 'push' && steps.check_changes.outputs.changes == 'true'
 
       - name: Push changes
         run: git push
-        if: steps.check_changes.outputs.changes == 'true'
+        if: github.event_name == 'push' && steps.check_changes.outputs.changes == 'true'

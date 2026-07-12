@@ -19,11 +19,23 @@ module.exports = {
         rules: [
             {
                 test: /\.ts$/,
-                use: 'ts-loader',
-                exclude: /node_modules/
+                loader: 'ts-loader',
+                exclude: /node_modules/,
+                options: {
+                    // Declarations are emitted separately via `tsc --emitDeclarationOnly`
+                    // to avoid ts-loader/webpack conflicts.
+                    compilerOptions: {
+                        declaration: false,
+                    },
+                },
             }
         ]
     },
-    mode: 'development',
-    devtool: false,
+    mode: 'production',
+    devtool: 'source-map',
+    optimization: {
+        // Keep the readable (non-minified) bundle in dist/liltag.js; the minified
+        // build is produced separately by terser as dist/liltag.min.js.
+        minimize: false,
+    },
 };

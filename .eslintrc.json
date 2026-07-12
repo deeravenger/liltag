@@ -13,6 +13,7 @@
     "ecmaVersion": 2018,
     "sourceType": "module"
   },
+  "ignorePatterns": ["dist/", "node_modules/", "coverage/"],
   "plugins": [
     "@typescript-eslint"
   ],

@@ -101,6 +101,17 @@ lilTag.enableCache(7200);
 lilTag.init();
 ```
 
+### Debug Logging
+
+By default LilTag stays quiet in the console (it only emits warnings and errors).
+Call `enableDebug()` before `init()` to turn on verbose logging while developing.
+
+```javascript
+const lilTag = new LilTag('path_or_url/to/liltag_config.json');
+lilTag.enableDebug();
+lilTag.init();
+```
+
 ## Configuration Options
 Each tag in the configuration file or object should have the following properties:
 
